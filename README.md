@@ -1,30 +1,23 @@
 # GDC Trainer
 
-Static web app / PWA-ready calculator trainer for classroom practice.
+Next.js App Router version.
 
-## Included
-- Basic arithmetic: +, −, ×, ÷, decimals, parentheses
-- Ans, DEL, AC, reciprocal, square, square root
-- log, ln, 10^x, e^x
+## Structure
+- Root (`main` branch): package.json, next.config.mjs, tsconfig.json
+- `app/`: page.tsx, layout.tsx, globals.css
+
+## Functions included
+- Basic arithmetic
+- Ans, DEL, AC
+- Powers, reciprocal, square root
+- log, ln
 - sin, cos, tan
-- SHIFT + trig for inverse trig
+- inverse trig via SHIFT
 - DEG / RAD
-- Calculation history
-- MENU → STAT → DIST
-- Binomial PDF
-- Binomial CDF: P(X ≤ x)
-- Normal PDF
-- Normal CDF between Lower and Upper
-- Inverse Normal
+- STAT > DIST
+  - Binomial PDF / CDF
+  - Normal PDF / CDF
+  - Inverse Normal
 
 ## Deploy
-Upload the repository to GitHub and import it into Vercel. This version has no npm dependencies and no environment variables.
-
-## Local preview
-Any static web server works, for example:
-
-```bash
-python -m http.server 8000
-```
-
-Then open http://localhost:8000.
+Push the contents of this folder to the root of the GitHub repository. Vercel should detect Next.js automatically.

@@ -72,6 +72,22 @@ function binomCdf(n: number, p: number, x: number) {
   return sum;
 }
 
+function binomRange(n: number, p: number, lower: number, upper: number) {
+  if (!Number.isInteger(n) || n < 0 || p < 0 || p > 1) return NaN;
+  if (!Number.isFinite(lower) || !Number.isFinite(upper)) return NaN;
+  const lo = Math.ceil(lower);
+  const hi = Math.floor(upper);
+  if (lo > hi) return 0;
+  return binomCdf(n, p, hi) - binomCdf(n, p, lo - 1);
+}
+
+function parseBound(raw: string) {
+  const value = raw.trim().toLowerCase().replace(/\s+/g, "");
+  if (["-∞", "-inf", "-infinity"].includes(value)) return -Infinity;
+  if (["∞", "+∞", "inf", "+inf", "infinity", "+infinity"].includes(value)) return Infinity;
+  return Number(raw);
+}
+
 function erf(x: number) {
   const sign = x < 0 ? -1 : 1;
   x = Math.abs(x);
@@ -158,12 +174,22 @@ export default function Home() {
   }
 
   function calculateDistribution() {
-    const n=Number(fields.n),p=Number(fields.p),x=Number(fields.x),mu=Number(fields.mu),sigma=Number(fields.sigma);
+    const n=Number(fields.n), p=Number(fields.p), x=Number(fields.x), mu=Number(fields.mu), sigma=Number(fields.sigma);
+    const lower=parseBound(fields.lower), upper=parseBound(fields.upper);
     let value=NaN;
-    if (dist === "BINOMIAL") value = distFn === "PDF" ? binomPdf(n,p,x) : binomCdf(n,p,x);
-    else if (distFn === "PDF") value=normalPdf(x,mu,sigma);
-    else if (distFn === "CDF") value=normalCdf(Number(fields.upper),mu,sigma)-normalCdf(Number(fields.lower),mu,sigma);
-    else value=invNormal(Number(fields.area),mu,sigma);
+
+    if (dist === "BINOMIAL") {
+      value = distFn === "PDF" ? binomPdf(n,p,x) : binomRange(n,p,lower,upper);
+    } else if (distFn === "PDF") {
+      value=normalPdf(x,mu,sigma);
+    } else if (distFn === "CDF") {
+      const lowerCdf = lower === -Infinity ? 0 : normalCdf(lower,mu,sigma);
+      const upperCdf = upper === Infinity ? 1 : normalCdf(upper,mu,sigma);
+      value=upperCdf-lowerCdf;
+    } else {
+      value=invNormal(Number(fields.area),mu,sigma);
+    }
+
     setResult(fmt(value));
   }
 
@@ -185,7 +211,10 @@ export default function Home() {
   }
 
   const fieldList = useMemo(() => {
-    if (dist === "BINOMIAL") return [["n","NumTrial"],["p","p"],["x","x"]] as [keyof Fields,string][];
+    if (dist === "BINOMIAL") {
+      if (distFn === "PDF") return [["n","NumTrial"],["p","p"],["x","x"]] as [keyof Fields,string][];
+      return [["n","NumTrial"],["p","p"],["lower","Lower"],["upper","Upper"]] as [keyof Fields,string][];
+    }
     const arr:[keyof Fields,string][]=[];
     if(distFn === "PDF") arr.push(["x","x"]);
     if(distFn === "CDF") arr.push(["lower","Lower"],["upper","Upper"]);
@@ -238,6 +267,13 @@ export default function Home() {
                 </label>
               ))}
             </div>
+            {distFn === "CDF" && (
+              <p className="dist-help">
+                {dist === "BINOMIAL"
+                  ? "Calculates P(Lower ≤ X ≤ Upper). Lower and Upper are inclusive."
+                  : "Calculates the area between Lower and Upper. You can enter -∞, ∞, -inf or inf."}
+              </p>
+            )}
             <button className="calc-dist" onClick={calculateDistribution}>CALC / EXE</button>
           </section>
         )}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111923" />
+  <title>GDC Trainer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="calculator">
+      <header class="brand-row">
+        <div><strong>GDC TRAINER</strong><span>GRAPHING CALCULATOR</span></div>
+        <button class="theme-dot" aria-label="Theme">☀︎</button>
+      </header>
+
+      <section class="screen">
+        <div class="screen-top"><span id="modeLabel">MAIN&nbsp;&nbsp;1</span><span><b id="angleLabel">DEG</b>&nbsp;&nbsp;MATH</span></div>
+        <div id="mainScreen">
+          <div id="expression" class="expression">0</div>
+          <div id="answer" class="answer">0</div>
+          <div class="status">◀▶ RUN&nbsp;&nbsp; <span id="angleStatus">DEG</span>&nbsp;&nbsp; MATH</div>
+        </div>
+        <div id="statScreen" class="stat-screen hidden">
+          <div id="statTitle" class="stat-title">STAT &gt; DIST &gt; BINOMIAL</div>
+          <div id="statResult" class="stat-result">0</div>
+          <div class="status">F1:DIST&nbsp;&nbsp; F6:CALC</div>
+        </div>
+      </section>
+
+      <section id="statPanel" class="stat-panel hidden">
+        <div class="stat-tabs">
+          <button class="active">DIST</button>
+          <button id="binmTab" class="active">BINM</button>
+          <button id="normTab">NORM</button>
+        </div>
+        <div class="dist-tabs">
+          <button id="pdfTab" class="active">PDF</button>
+          <button id="cdfTab">CDF</button>
+          <button id="invTab" class="hidden">InvN</button>
+        </div>
+        <div id="distFields" class="field-grid"></div>
+        <button id="calcDist" class="calc-dist">CALC / EXE</button>
+      </section>
+
+      <section id="keypad" class="keypad"></section>
+    </section>
+
+    <aside class="side-panel">
+      <h1>GDC Trainer</h1>
+      <p>Practicá la interfaz de una calculadora gráfica desde el navegador.</p>
+      <div class="mode-box"><b>Angle</b><button id="angleToggle">DEG</button></div>
+      <h2>Historial</h2>
+      <p id="emptyHistory" class="muted">Sin cálculos todavía.</p>
+      <ol id="history" class="history"></ol>
+    </aside>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
